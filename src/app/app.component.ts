@@ -10,6 +10,7 @@ import { Todo } from 'src/models/todo.model';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
+  public mode: String="list";
   public todos: Todo[]=[];
   /**résultat: vazio variable en TypeScript, pour donner le type il
   faut mettre : et après le type. Le type any signifie que tu peut
@@ -50,14 +51,17 @@ export class AppComponent {
     if(index != -1){
       this.todos.splice(index,1);
     }
+    this.save();
   }
 
   markAsDone(todo:Todo){
     todo.done=true;
+    this.save();
   }
 
   markAsUndone(todo:Todo){
     todo.done = false;
+    this.save();
   }
 
   //pour additioner nouvelles tâches
@@ -81,6 +85,22 @@ export class AppComponent {
   save(){
     const data = JSON.stringify(this.todos); //convertir le json en string
     localStorage.setItem('todos',data);
+    this.mode='list';
+  }
+
+  ngOnInit() {
+    this.loadTodos();
+  }
+
+  loadTodos() {
+    const data = localStorage.getItem('todos');
+    if (data) {
+      this.todos = JSON.parse(data);
+    }
+  }
+
+  changeMode(mode: String) {
+    this.mode = mode;
   }
 
 }
